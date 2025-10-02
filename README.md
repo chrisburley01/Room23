@@ -1,2 +1,2 @@
 # Room23
-“Exclusi  for leaders, founders &amp; creatives
+Exclusive coaching for leaders, founders & creatives
