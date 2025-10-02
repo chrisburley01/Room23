@@ -34,6 +34,16 @@
     h1,h2,h3{font-family:'Playfair Display',serif;}
     h1{font-size:clamp(2.2rem,4vw,3.6rem); margin:.6rem 0 1rem}
     h3{color:var(--brand); font-weight:700;}
+  </style>  <style>
+    /* Mobile nav (hamburger) */
+    .mobile-toggle{display:none; background:transparent; border:1px solid var(--line); width:42px; height:42px; border-radius:10px; align-items:center; justify-content:center; font-size:1.2rem; color:var(--text)}
+    .mobile-panel{display:none; position:fixed; top:64px; right:12px; left:auto; background:rgba(18,18,24,.98); border:1px solid var(--line); border-radius:14px; padding:.6rem; width:min(260px, 90vw); box-shadow:var(--shadow)}
+    .mobile-panel a{display:block; padding:.8rem 1rem; border-radius:10px; color:#d9dbe3}
+    .mobile-panel a:hover{background:rgba(255,255,255,.04)}
+    @media (max-width: 860px){
+      .navlinks{display:none}
+      .mobile-toggle{display:inline-flex}
+    }
   </style></head>
 <body>
   <header>
@@ -50,6 +60,15 @@
         <a href="#about">About</a>
         <a class="btn primary" href="#book">Book consult</a>
       </nav>
+      <button class="mobile-toggle" id="menuBtn" aria-label="Open menu">≡</button>
+      <div class="mobile-panel" id="mobileMenu" role="menu">
+        <a href="#programs" role="menuitem">Programs</a>
+        <a href="#strength" role="menuitem">Strength</a>
+        <a href="#goals" role="menuitem">Life Goals</a>
+        <a href="#results" role="menuitem">Results</a>
+        <a href="#about" role="menuitem">About</a>
+        <a class="btn primary" href="#book" role="menuitem" style="margin:.4rem">Book consult</a>
+      </div>
     </div>
   </header>  <main id="top">
     <!-- HERO -->
@@ -140,5 +159,22 @@
 
   </main>  <footer class="container" style="border-top:1px solid var(--line); padding:2rem 0; color:var(--muted); font-size:.9rem; text-align:center">
     <p>© <span id="year"></span> Room 23 · All rights reserved · <a href="mailto:hello@room23.co" style="color:var(--muted)">hello@room23.co</a></p>
-  </footer>  <script>document.getElementById('year').textContent=new Date().getFullYear();</script></body>
+  </footer>  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>  <script>
+    // Mobile menu toggle
+    const btn = document.getElementById('menuBtn');
+    const panel = document.getElementById('mobileMenu');
+    if(btn && panel){
+      btn.addEventListener('click', ()=>{
+        const open = panel.style.display === 'block';
+        panel.style.display = open ? 'none' : 'block';
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+      // close on link click
+      panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{panel.style.display='none';}));
+      // close on outside click
+      document.addEventListener('click', (e)=>{
+        if(!panel.contains(e.target) && e.target!==btn){ panel.style.display='none'; }
+      });
+    }
+  </script></body>
 </html>
