@@ -21,6 +21,8 @@
       --brand-2:#5e8fa8;
       --shadow:0 20px 40px rgba(0,0,0,.35);
       --radius:18px;
+      --glow: 0 0 10px rgba(216,181,106,.55), 0 0 22px rgba(216,181,106,.35);
+      --glow-strong: 0 0 14px rgba(216,181,106,.75), 0 0 36px rgba(216,181,106,.45);
     }
     body{margin:0; font-family:Inter, sans-serif; background:var(--bg); color:var(--text); line-height:1.6;}
     a{color:var(--text); text-decoration:none}
@@ -30,10 +32,21 @@
     .logo{display:flex; align-items:center; gap:.6rem; font-weight:700; font-size:1.2rem; letter-spacing:.02em}
     .logo img{height:36px; width:auto; border-radius:6px}
     .btn{display:inline-flex; align-items:center; gap:.6rem; border:1px solid var(--line); padding:.8rem 1.1rem; border-radius:999px; background:transparent; font-weight:600; transition:.2s}
-    .btn.primary{background:linear-gradient(180deg,var(--brand),#b99546); color:#121212; border-color:#b08f4f}
+    .btn.primary{background:linear-gradient(180deg,var(--brand),#b99546); color:#121212; border-color:#b08f4f; box-shadow:var(--glow)}
+    .btn.primary:hover{box-shadow:var(--glow-strong); transform:translateY(-1px);} 
     h1,h2,h3{font-family:'Playfair Display',serif;}
     h1{font-size:clamp(2.2rem,4vw,3.6rem); margin:.6rem 0 1rem}
-    h3{color:var(--brand); font-weight:700;}
+    h3{color:var(--brand); font-weight:700; text-shadow:var(--glow);} 
+      /* Door animation */
+    .door-wrap{filter:drop-shadow(0 16px 40px rgba(0,0,0,.5)); z-index:2}
+    .door-svg{display:block}
+    .door-panel{animation:doorOpen 1.2s ease 0.6s forwards}
+    .hero-copy.reveal{opacity:1 !important; transform:none !important}
+    .hero-video.reveal{opacity:1 !important}
+    @keyframes doorOpen{from{transform:perspective(800px) rotateY(0deg)} to{transform:perspective(800px) rotateY(-28deg)}}
+    @media (prefers-reduced-motion: reduce){
+      .door-panel{animation:none}
+    }
   </style>  <style>
     /* Mobile nav (hamburger) */
     .mobile-toggle{display:none; background:transparent; border:1px solid var(--line); width:42px; height:42px; border-radius:10px; align-items:center; justify-content:center; font-size:1.2rem; color:var(--text)}
@@ -42,8 +55,13 @@
     .mobile-panel a:hover{background:rgba(255,255,255,.04)}
     @media (max-width: 860px){
       .navlinks{display:none}
+      .mobile-toggle{display:inline-flex; position:relative}
+    }
       .mobile-toggle{display:inline-flex}
     }
+  </style>  <style>
+    #whatsappFab{position:fixed; right:14px; bottom:18px; z-index:60; background:var(--brand); color:#121212; font-weight:800; text-decoration:none; width:52px; height:52px; border-radius:50%; display:grid; place-items:center; border:1px solid #b08f4f; box-shadow:var(--glow);}
+    #whatsappFab:hover{box-shadow:var(--glow-strong)}
   </style></head>
 <body>
   <header>
@@ -59,6 +77,7 @@
         <a href="#results">Results</a>
         <a href="#about">About</a>
         <a class="btn primary" href="#book">Book consult</a>
+        <a class="btn" href="https://wa.me/447464498838?text=Hi%20Room%2023%20%E2%80%94%20I%27d%20like%20to%20chat" target="_blank" rel="noopener" aria-label="WhatsApp">WhatsApp</a>
       </nav>
       <button class="mobile-toggle" id="menuBtn" aria-label="Open menu">≡</button>
       <div class="mobile-panel" id="mobileMenu" role="menu">
@@ -68,19 +87,50 @@
         <a href="#results" role="menuitem">Results</a>
         <a href="#about" role="menuitem">About</a>
         <a class="btn primary" href="#book" role="menuitem" style="margin:.4rem">Book consult</a>
+        <a class="btn" href="https://wa.me/447464498838?text=Hi%20Room%2023%20%E2%80%94%20I%27d%20like%20to%20chat" target="_blank" rel="noopener" role="menuitem" style="margin:.2rem">WhatsApp</a>
       </div>
     </div>
+    </div>
   </header>  <main id="top">
-    <!-- HERO -->
-    <section class="hero container" style="padding:4rem 0 3rem; text-align:center">
-      <span style="color:var(--brand); font-weight:700; text-transform:uppercase; font-size:.9rem; letter-spacing:.12em">Exclusive · Confidential · Results</span>
-      <h1>Room 23 — your private suite for clarity, strength and performance.</h1>
-      <p style="max-width:650px; margin-inline:auto; color:#d0d2d8; font-size:1.15rem">Coaching for executives, business owners and musicians who want discreet, results-driven support. Reset stress, sharpen focus, strengthen body and mind, and align your life goals.</p>
-      <div style="margin-top:1.8rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
-        <a class="btn primary" href="#book">Book a 20-min consult</a>
-        <a class="btn" href="#about">Why Room 23?</a>
-      </div>
-    </section><!-- About -->
+    <!-- HERO SPLASH with Door & Video -->
+    <section class="hero" style="position:relative; overflow:hidden; min-height:78vh; display:grid; place-items:center;">
+      <!-- Video layer -->
+      <video id="heroVideo" class="hero-video" playsinline muted loop preload="metadata" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .9s ease;">
+        <source src="assets/room23-hero.mp4" type="video/mp4" />
+        <!-- Optional: separate clips – the first will be used if present -->
+        <!-- <source src="assets/room23-hero.webm" type="video/webm" /> -->
+      </video><!-- Dark overlay for readability -->
+  <div class="hero-scrim" style="position:absolute; inset:0; background:radial-gradient(1200px 600px at 80% -10%, rgba(216,181,106,.12), transparent 60%), rgba(10,10,12,.55); mix-blend:normal;"></div>
+
+  <!-- Door logo (SVG) -->
+  <div class="door-wrap" aria-label="Room 23 door" title="Room 23">
+    <svg class="door-svg" width="220" height="320" viewBox="0 0 220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Frame -->
+      <rect x="6" y="6" width="208" height="308" rx="18" stroke="#d8b56a" stroke-width="12"/>
+      <!-- Door panel (animates open) -->
+      <g class="door-panel" style="transform-origin: 112px 160px">
+        <path d="M36 40 L176 70 L176 250 L36 280 Z" fill="#0a0a0c" stroke="#d8b56a" stroke-width="10"/>
+        <!-- numerals -->
+        <text x="108" y="140" text-anchor="middle" fill="#d8b56a" font-family="'Playfair Display', serif" font-size="84" font-weight="700">2</text>
+        <rect x="96" y="150" width="24" height="6" fill="#d8b56a"/>
+        <text x="112" y="230" text-anchor="middle" fill="#d8b56a" font-family="'Playfair Display', serif" font-size="84" font-weight="700">3</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Headline & CTAs appear after door opens -->
+  <div class="hero-copy container" style="position:absolute; inset:auto 0 8vh; text-align:center; opacity:0; transform:translateY(12px); transition:opacity .6s ease .9s, transform .6s ease .9s;">
+    <span style="color:var(--brand); font-weight:700; text-transform:uppercase; font-size:.9rem; letter-spacing:.12em">Exclusive · Confidential · Results</span>
+    <h1 style="margin: .6rem 0 0">Room 23 — your private suite for clarity, strength and performance.</h1>
+    <p style="max-width:700px; margin:.6rem auto 1.2rem; color:#d0d2d8; font-size:1.12rem">Step inside. A discreet coaching space for leaders, founders and musicians. Reset stress, sharpen focus, and align your life goals.</p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
+      <a class="btn primary" href="#book">Book a 20-min consult</a>
+      <a class="btn" href="#about">Why Room 23?</a>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
 <section id="about" class="container" style="padding:3rem 0">
   <h2>Why Room 23?</h2>
   <p style="max-width:700px">Room 23 is not another public “help me” brand. It’s a discreet, premium coaching space designed for leaders and creatives who demand privacy and results. Think of it as your own executive suite — a reset point where you strategise, regain calm, strengthen, and step forward with renewed energy.</p>
@@ -156,8 +206,11 @@
     <a class="btn primary" href="https://calendly.com/your-link/20min" target="_blank">Schedule now</a>
   </div>
 </section>
+<!-- Floating WhatsApp -->
 
-  </main>  <footer class="container" style="border-top:1px solid var(--line); padding:2rem 0; color:var(--muted); font-size:.9rem; text-align:center">
+<a id="whatsappFab" href="https://wa.me/447464498838?text=Hi%20Room%2023%20%E2%80%94%20I%27d%20like%20to%20chat" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WA</a>
+
+</main>  <footer class="container" style="border-top:1px solid var(--line); padding:2rem 0; color:var(--muted); font-size:.9rem; text-align:center">
     <p>© <span id="year"></span> Room 23 · All rights reserved · <a href="mailto:hello@room23.co" style="color:var(--muted)">hello@room23.co</a></p>
   </footer>  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>  <script>
     // Mobile menu toggle
@@ -175,6 +228,22 @@
       document.addEventListener('click', (e)=>{
         if(!panel.contains(e.target) && e.target!==btn){ panel.style.display='none'; }
       });
+    }
+  </script>  <script>
+    // Autoplay helpers (muted + playsinline should work on mobile)
+    const vid = document.getElementById('heroVideo');
+    const copy = document.querySelector('.hero-copy');
+    function reveal(){
+      vid && vid.classList.add('reveal');
+      copy && copy.classList.add('reveal');
+    }
+    if(vid){
+      // Start video when page is ready
+      const play = () => vid.play().then(reveal).catch(()=>{ // fall back to click to start
+        document.addEventListener('click', oncePlay, { once:true });
+      });
+      const oncePlay = ()=>{ vid.play().then(reveal).catch(()=>reveal()); };
+      if(document.readyState === 'complete') play(); else window.addEventListener('load', play);
     }
   </script></body>
 </html>
